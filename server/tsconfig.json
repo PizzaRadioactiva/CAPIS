@@ -16,11 +16,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitAny": true,
-    "strictNullChecks": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "strictNullChecks": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
