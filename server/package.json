@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc -p tsconfig.json && prisma generate --schema=../prisma/schema.prisma",
+    "build": "echo '--- TSC VERSION ---' && npx tsc --version && echo '--- TSC PATH ---' && which tsc || true && ls -la node_modules/.bin/tsc && cat node_modules/typescript/package.json | grep version && tsc -p tsconfig.json && prisma generate --schema=../prisma/schema.prisma",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate --schema=../prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema=../prisma/schema.prisma",
