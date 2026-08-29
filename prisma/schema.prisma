@@ -1,0 +1,125 @@
+// C.A.P.S. — Centro de Atención Primaria de la Salud
+// Prisma schema — Sistema de Gestión de Stock
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum MovementType {
+  STOCK_IN
+  STOCK_OUT
+  ADJUSTMENT
+}
+
+enum Unit {
+  UNIT
+  BOX
+  BLISTER
+  BOTTLE
+  VIAL
+  AMPOULE
+  TUBE
+  ROLL
+  PACK
+  ML
+  L
+  MG
+  G
+  KG
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(STAFF)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  movements StockMovement[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  name           String
+  genericName    String?
+  categoryId     String?
+  description    String?
+  manufacturer   String?
+  quantity       Int       @default(0)
+  minimumStock   Int       @default(10)
+  unit           Unit      @default(UNIT)
+  batchNumber    String?
+  expirationDate DateTime?
+  supplier       String?
+  notes          String?
+  isDemo         Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  category  Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  movements StockMovement[]
+
+  @@index([categoryId])
+  @@index([name])
+  @@index([quantity])
+  @@index([expirationDate])
+  @@map("products")
+}
+
+model StockMovement {
+  id        String       @id @default(cuid())
+  productId String
+  userId    String?
+  type      MovementType
+  quantity  Int
+  reason    String
+  notes     String?
+  createdAt DateTime     @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([type])
+  @@map("stock_movements")
+}
+
+model Settings {
+  id           String   @id @default("singleton")
+  capsEmail    String?
+  orgName      String   @default("C.A.P.S.")
+  orgSubtitle  String   @default("Centro de Atención Primaria de la Salud")
+  updatedAt    DateTime @updatedAt
+
+  @@map("settings")
+}

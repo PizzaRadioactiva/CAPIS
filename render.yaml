@@ -1,0 +1,54 @@
+services:
+  # --- Backend API (Node/Express) ---
+  - type: web
+    name: caps-stock-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npm run build:server
+    startCommand: npm run prisma:deploy && node server/dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: caps-stock-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: CLIENT_URL
+        value: https://caps-stock-client.onrender.com
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: onboarding@resend.dev
+      - key: CAPS_EMAIL
+        sync: false
+
+  # --- Frontend (Static Site) ---
+  - type: web
+    name: caps-stock-client
+    runtime: static
+    rootDir: .
+    buildCommand: npm install && npm run build:client
+    staticPublishPath: client/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://caps-stock-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: caps-stock-db
+    plan: free
+    region: oregon
+    databaseName: caps_stock
+    user: caps_stock_user

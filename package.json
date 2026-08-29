@@ -1,0 +1,26 @@
+{
+  "name": "caps-stock-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "C.A.P.S. - Sistema de gestión de stock médico y farmacéutico",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
+    "build": "npm run build --workspace=server && npm run build --workspace=client",
+    "build:server": "npm run build --workspace=server",
+    "build:client": "npm run build --workspace=client",
+    "start": "npm run start --workspace=server",
+    "prisma:generate": "npm run prisma:generate --workspace=server",
+    "prisma:migrate": "npm run prisma:migrate --workspace=server",
+    "prisma:deploy": "npm run prisma:deploy --workspace=server",
+    "seed": "npm run seed --workspace=server",
+    "postinstall": "npm run prisma:generate --workspace=server"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
