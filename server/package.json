@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "cat tsconfig.json && npx --package=typescript tsc -p tsconfig.json && npx prisma generate --schema=../prisma/schema.prisma",
+    "build": "npx --package=typescript tsc -p tsconfig.json && npx prisma generate --schema=../prisma/schema.prisma",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate --schema=../prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema=../prisma/schema.prisma",
